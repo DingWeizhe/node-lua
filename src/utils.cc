@@ -16,6 +16,7 @@ char * get_str(v8::Local<v8::Value> val){
 
 
 v8::Local<v8::Value> lua_to_value(lua_State* L, int i){
+ char *p;
  switch(lua_type(L, i)){
  case LUA_TBOOLEAN:
 	 return Nan::New((int)lua_toboolean(L, i));
@@ -24,7 +25,8 @@ v8::Local<v8::Value> lua_to_value(lua_State* L, int i){
 	 return Nan::New(lua_tonumber(L, i));
    break;
  case LUA_TSTRING:
-	 return Nan::New((char *)lua_tostring(L, i)).ToLocalChecked();
+   p = (char *)lua_tostring(L, i);
+   return Nan::CopyBuffer(p, strlen(p)).ToLocalChecked();
    break;
  case LUA_TTABLE:
    {
